@@ -5,9 +5,12 @@ const {PORT} = require('./constants')
 
 // import routes
 const productRoutes = require('./routes/product')
+const categoryRoutes = require('./routes/category')
 
 // initialize routes
 app.use('/api/v1', productRoutes)
+app.use('/api/v1', categoryRoutes)
+
 
 const appStart = () => {
     try {
