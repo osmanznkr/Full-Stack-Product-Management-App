@@ -15,7 +15,7 @@ function Copyright(props: any) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
+            <Link color="inherit" href="http://localhost:3000">
                 Product Management
             </Link>{' '}
             {new Date().getFullYear()}
@@ -64,7 +64,7 @@ export default function SignUp() {
                                     required
                                     fullWidth
                                     id="firstName"
-                                    label="Ad"
+                                    label="First Name"
                                     autoFocus
                                 />
                             </Grid>
@@ -73,7 +73,7 @@ export default function SignUp() {
                                     required
                                     fullWidth
                                     id="lastName"
-                                    label="Soyadı"
+                                    label="Last Name"
                                     name="lastName"
                                     autoComplete="family-name"
                                 />
@@ -83,7 +83,7 @@ export default function SignUp() {
                                     required
                                     fullWidth
                                     id="email"
-                                    label="Email"
+                                    label="Email Address"
                                     name="email"
                                     autoComplete="email"
                                 />
@@ -93,7 +93,7 @@ export default function SignUp() {
                                     required
                                     fullWidth
                                     name="password"
-                                    label="Şifre"
+                                    label="Password"
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
@@ -113,7 +113,7 @@ export default function SignUp() {
                         <Grid container justifyContent="flex-end">
                             <Grid item>
                                 <Link href="#" variant="body2">
-                                     Giriş Yap
+                                    Giriş Yap
                                 </Link>
                             </Grid>
                         </Grid>
