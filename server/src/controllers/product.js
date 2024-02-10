@@ -1,19 +1,16 @@
 const pool = require('../config/db.js')
 const {  getAllProductsQuery, getProductByIdQuery, addProductQuery, updateProductQuery } = require('../queries/product.js')
 
-const getProducts = async(req,res) =>{
+const getProducts = async (req, res) => {
     try {
-       const allProducts = await pool.query(getAllProductsQuery )
-
-       return res.status(200).json({
-        success: true,
-        products: allProducts.rows
-
-       })
+        const allProducts = await pool.query(getAllProductsQuery);
+        const products = allProducts.rows;
+        return res.status(200).send(products);
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
+        res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
 const getProductById = async (req, res) => {
     try {
