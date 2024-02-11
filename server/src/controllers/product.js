@@ -1,5 +1,5 @@
-const pool = require('../config/db.js')
-const {  getAllProductsQuery, getProductByIdQuery, addProductQuery, updateProductQuery } = require('../queries/product.js')
+const pool = require('../config/db.js');
+const { getAllProductsQuery } = require('../queries/product.js');
 
 const getProducts = async (req, res) => {
     try {
@@ -16,7 +16,7 @@ const getProductById = async (req, res) => {
     try {
         const id = parseInt(req.params.product_id);
         const results = await pool.query(getProductByIdQuery, [id]);
-        res.status(200).json(results.rows);
+        res.status(200).send(results.rows);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ success: false, message: "Server error" });
@@ -48,7 +48,8 @@ const updateProduct = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            updatedUser: rows[0]
+            message: "Güncellendi",
+            updatedProduct: rows
         })
         
         

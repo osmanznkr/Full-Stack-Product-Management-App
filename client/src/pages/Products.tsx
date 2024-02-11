@@ -7,10 +7,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { getProducts } from '../redux/productSlice';
+import { getProducts } from '../redux/slices/productSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { RootState } from '../redux/store';
 import { Button } from '@mui/material';
+import Progress from '../components/Progress';
+import FormDialog from '../components/FormDialog';
+import { openDialog } from '../redux/slices/dialogSlice';
+
 
 interface Column {
     id: 'name' | 'category' | 'price' | 'stock' | 'actions';
@@ -50,14 +54,23 @@ const columns: readonly Column[] = [
 export default function Products() {
     const dispatch = useAppDispatch();
 
+    const [productId, setProductId] = React.useState<number>();
+
 
     React.useEffect(() => {
         dispatch(getProducts())
-    }, [dispatch])
+    }, [])
 
-    const products = useAppSelector((state: RootState) => state.products.products)
+
+    const products = useAppSelector((state: RootState) => state.products)
+    const isOpen = useAppSelector((state: RootState) => state.dialog.isOpen)
+
+    console.log(products.loading)
 
     console.log(products)
+
+    console.log(productId)
+
 
 
     const [page, setPage] = React.useState(0);
@@ -72,59 +85,68 @@ export default function Products() {
         setPage(0);
     };
 
-    const showDetail = () => {
-        console.log("detail ");
-    };
-
-    const handleDelete = () => {
-
-        console.log("Sil ");
+    const showDetail = (productIdd: number) => {
+        setProductId(productIdd)
+        dispatch(openDialog())
     };
 
     return (
-        <Paper sx={{ width: '80%', overflow: 'hidden', marginLeft: 'auto', marginRight: 'auto', marginTop: '50px' }}>
-            <TableContainer sx={{ maxHeight: 470 }}>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <TableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth, fontWeight: 'bold' }}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {products && products.map((product) => {
-                            return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={product.product_id}>
-                                    <TableCell>{product.product_name}</TableCell>
-                                    <TableCell>{product.category_id}</TableCell>
-                                    <TableCell align="right">{product.current_price} ₺</TableCell>
-                                    <TableCell align="right">{product.stock}</TableCell>
-                                    <TableCell align="right">
-                                        <Button style={{ marginRight: '10px' }} onClick={showDetail} variant="contained" color="primary">DETAY</Button>
-                                        <Button variant="contained" color="error">SİL</Button>
+        <div>
+            <Paper sx={{ width: '80%', overflow: 'hidden', marginLeft: 'auto', marginRight: 'auto', marginTop: '50px' }}>
+                <TableContainer sx={{ maxHeight: 470 }}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth, fontWeight: 'bold' }}
+                                    >
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {products.loading ? (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} align="center">
+                                        <Progress />
                                     </TableCell>
                                 </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={products.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </Paper>
+                            ) : (
+                                products && products.products.map((product) => (
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={product.product_id}>
+                                        <TableCell>{product.product_name}</TableCell>
+                                        <TableCell>{product.category_name}</TableCell>
+                                        <TableCell align="right">{product.current_price} ₺</TableCell>
+                                        <TableCell align="right">{product.stock}</TableCell>
+                                        <TableCell align="right">
+                                            <Button style={{ marginRight: '10px' }} onClick={() => showDetail(product.product_id)} variant="contained" color="primary">DETAY</Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                {!products.loading && (
+                    <TablePagination
+                        rowsPerPageOptions={[10, 25, 100]}
+                        component="div"
+                        count={products.products.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                )}
+            </Paper>
+            <Paper sx={{ width: '80%', overflow: 'hidden', marginLeft: 'auto', marginRight: 'auto', marginTop: '50px' }}>
+                {isOpen && <FormDialog product_id={productId} />}
+            </Paper>
+        </div>
     );
+
 }
