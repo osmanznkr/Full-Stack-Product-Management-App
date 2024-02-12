@@ -12,31 +12,44 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { onLogin } from '../api/auth';
+import { useAppDispatch } from '../redux/hooks';
+import { authenticateUser } from '../redux/slices/authSlice';
 
-function Copyright(props: any) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="http://localhost:3000">
-                Product Management
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 const defaultTheme = createTheme();
 
 export default function Login() {
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const dispatch = useAppDispatch();
+    const [formData, setFormData] = React.useState({
+        username: '',
+        password: '',
+        grant_type: 'password',
+        client_id: 'asdsad',
+        client_secret: 'asdasd'
+    });
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        try {
+            await onLogin(formData)
+            dispatch(authenticateUser())
+            localStorage.setItem('isAuth', 'true')
+        } catch (error) {
+            console.log(error)
+            console.log('login error');
+        }
     };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    console.log(formData)
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -61,21 +74,25 @@ export default function Login() {
                             margin="normal"
                             required
                             fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
+                            id="username"
+                            label="Kullanıcı Adı"
+                            name="username"
+                            autoComplete="username"
                             autoFocus
+                            value={formData.username}
+                            onChange={handleInputChange}
                         />
                         <TextField
                             margin="normal"
                             required
                             fullWidth
                             name="password"
-                            label="Password"
+                            label="Şifre"
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            value={formData.password}
+                            onChange={handleInputChange}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
@@ -103,7 +120,6 @@ export default function Login() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
         </ThemeProvider>
     );

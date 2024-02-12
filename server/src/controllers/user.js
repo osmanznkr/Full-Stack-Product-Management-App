@@ -1,21 +1,21 @@
 const pool = require('../config/db.js');
-const { getAllProductsQuery, getProductByIdQuery } = require('../queries/product.js');
+const { getAllUsersQuery, getUserByIdQuery, addUserQuery } = require('../queries/user.js');
 
-const getProducts = async (req, res) => {
+const getUsers = async (req, res) => {
     try {
-        const allProducts = await pool.query(getAllProductsQuery);
-        const products = allProducts.rows;
-        return res.status(200).send(products);
+        const allUsers = await pool.query(getAllUsersQuery);
+        const users = allUsers.rows;
+        return res.status(200).send(users);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-const getProductById = async (req, res) => {
+const getUserById = async (req, res) => {
     try {
-        const id = parseInt(req.params.product_id);
-        const results = await pool.query(getProductByIdQuery, [id]);
+        const id = parseInt(req.params.id);
+        const results = await pool.query(getUserByIdQuery, [id]);
         res.status(200).send(results.rows);
     } catch (error) {
         console.log(error.message);
@@ -24,10 +24,10 @@ const getProductById = async (req, res) => {
 };
 
 
-const addProduct = async (req, res) => {
+const addUser = async (req, res) => {
     try {
-        const values = [ req.body.product_name, req.body.category_id, req.body.current_price, req.body.stock, req.body.past_prices, req.body.barcode]
-        const {rows} = await pool.query(addProductQuery, values);
+        const values = [ req.body.user_email, req.body.password]
+        const {rows} = await pool.query(addUserQuery, values);
 
         return res.status(201).json({
             success: true,
@@ -40,10 +40,10 @@ const addProduct = async (req, res) => {
     }
 };
 
-const updateProduct = async (req, res) => {
+const updateUser = async (req, res) => {
     try {
-        const product_id = parseInt(req.params.product_id);
-        const values = [req.body.product_name, req.body.category_id, req.body.current_price, req.body.stock, req.body.barcode, product_id]
+        const id = parseInt(req.params.id);
+        const values = [req.body.user_email, req.body.password, id]
         const {rows} = await pool.query(updateProductQuery, values);
 
         return res.status(200).json({
@@ -59,13 +59,13 @@ const updateProduct = async (req, res) => {
     }
 };
 
-const deleteProductById = async (req, res) => {
+const deleteUserById = async (req, res) => {
     try {
-        const id = parseInt(req.params.product_id);
-        const results = await pool.query(deleteProductByIdQuery, [id]);
+        const id = parseInt(req.params.id);
+        const results = await pool.query(deleteUserByIdQuery, [id]);
         return res.status(200).json({
             success: true,
-            message: "Product deleted successfully!"
+            message: "User deleted successfully!"
         })
     } catch (error) {
         console.log(error.message);
@@ -74,9 +74,9 @@ const deleteProductById = async (req, res) => {
 };
 
 module.exports = {
-    getProducts,
-    getProductById,
-    addProduct,
-    updateProduct,
-    deleteProductById
+    getUsers,
+    getUserById,
+    addUser,
+    updateUser,
+    deleteUserById
 };
