@@ -1,8 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-interface DialogState {
-    isOpen: boolean;
-}
+import { DialogState } from "../../types/generalTypes";
 
 const initialState: DialogState = {
     isOpen: false,

@@ -1,15 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { Category, CategoryState } from '../../types/categoryTypes';
+import { BASE_URL } from '../../api';
 
-interface Category {
-    category_id: number;
-    category_name: string;
-}
-interface CategoryState {
-    categories: Category[];
-    loading: boolean;
-    error: string
-}
 
 const initialState: CategoryState = {
     categories: [],
@@ -20,7 +13,7 @@ const initialState: CategoryState = {
 export const getCategories = createAsyncThunk(
     'categories',
     async () => {
-        const response = await axios.get(`http://localhost:5000/api/v1/categories`);
+        const response = await axios.get(`${BASE_URL}/categories`);
         return response.data;
     },
 );

@@ -7,23 +7,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { getProducts } from '../redux/slices/productSlice';
+import { Button } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { RootState } from '../redux/store';
-import { Button } from '@mui/material';
 import Progress from '../components/Progress';
 import FormDialog from '../components/FormDialog';
+import { getProducts } from '../redux/slices/productSlice';
 import { openDialog } from '../redux/slices/dialogSlice';
-
-
-interface Column {
-    id: 'name' | 'category' | 'price' | 'stock' | 'actions';
-    label: string;
-    minWidth?: number;
-    align?: 'right';
-    format?: (value: number) => string;
-}
-
+import { Column } from '../types/generalTypes';
 
 const columns: readonly Column[] = [
     { id: 'name', label: 'ÜRÜN ADI', minWidth: 170 },
@@ -50,31 +41,27 @@ const columns: readonly Column[] = [
     },
 ];
 
-
 export default function Products() {
-    const dispatch = useAppDispatch();
-
+    // State Hooks
     const [productId, setProductId] = React.useState<number>();
-
-
-    React.useEffect(() => {
-        dispatch(getProducts())
-    }, [])
-
-
-    const products = useAppSelector((state: RootState) => state.products)
-    const isOpen = useAppSelector((state: RootState) => state.dialog.isOpen)
-
-    console.log(products.loading)
-
-    console.log(products)
-
-    console.log(productId)
-
-
-
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    // Redux Hooks
+    const dispatch = useAppDispatch();
+    const products = useAppSelector((state: RootState) => state.products);
+    const isOpen = useAppSelector((state: RootState) => state.dialog.isOpen);
+
+    // Effects
+    React.useEffect(() => {
+        dispatch(getProducts());
+    }, []);
+
+    // Functions
+    const showDetail = React.useCallback((productId: number) => {
+        setProductId(productId);
+        dispatch(openDialog());
+    }, [dispatch]);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -83,11 +70,6 @@ export default function Products() {
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
-    };
-
-    const showDetail = (productIdd: number) => {
-        setProductId(productIdd)
-        dispatch(openDialog())
     };
 
     return (
@@ -123,7 +105,7 @@ export default function Products() {
                                         <TableCell align="right">{product.current_price} ₺</TableCell>
                                         <TableCell align="right">{product.stock}</TableCell>
                                         <TableCell align="right">
-                                            <Button style={{ marginRight: '10px' }} onClick={() => showDetail(product.product_id)} variant="contained" color="primary">DETAY</Button>
+                                            <Button type='button' style={{ marginRight: '10px' }} onClick={() => showDetail(product.product_id)} variant="contained" color="primary">DETAY</Button>
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -148,5 +130,4 @@ export default function Products() {
             </Paper>
         </div>
     );
-
 }
