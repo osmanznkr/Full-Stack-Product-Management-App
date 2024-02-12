@@ -1,23 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { Product, ProductState } from '../../types/productTypes';
+import { BASE_URL } from '../../api';
 
-interface Product {
-    product_id: number;
-    product_name: string;
-    category_name: string;
-    current_price: number;
-    stock: number;
-    past_prices?: number[];
-    barcode?: string;
-    created_at: string;
-}
-
-interface ProductState {
-    product: Product[]
-    products: Product[];
-    loading: boolean;
-    error: string
-}
 
 const initialState: ProductState = {
     product: [],
@@ -29,7 +14,7 @@ const initialState: ProductState = {
 export const getProducts = createAsyncThunk(
     'products',
     async () => {
-        return await axios.get(`http://localhost:5000/api/v1/products`)
+        return await axios.get(`${BASE_URL}/products`)
             .then((response) => response.data)
     },
 );
@@ -37,7 +22,7 @@ export const getProducts = createAsyncThunk(
 export const getProductDetail = createAsyncThunk(
     'getProductById',
     async (productId: number) => {
-        return await axios.get(`http://localhost:5000/api/v1/products/${productId}`)
+        return await axios.get(`${BASE_URL}/products/${productId}`)
             .then((response) => response.data)
     },
 );

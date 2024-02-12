@@ -13,26 +13,26 @@ import { getProductDetail } from "../redux/slices/productSlice";
 import { getCategories } from "../redux/slices/categorySlice";
 import moment from 'moment';
 import 'moment/locale/tr'
-
-
-interface FormDialogProps {
-    product_id?: number | undefined;
-}
+import PastPricesTextField from "./PastPrices";
+import { FormDialogProps } from "../types/generalTypes";
 
 const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
+    // State Hooks
     const [formData, setFormData] = useState<any>({});
     const [categories, setCategories] = useState<any[]>([]);
-    const dispatch = useAppDispatch();
 
+    // Redux Hooks
+    const dispatch = useAppDispatch();
+    const product = useAppSelector((state: RootState) => state.products.product[0]);
+    const isOpen = useAppSelector((state: RootState) => state.dialog.isOpen);
+
+    // Effects
     useEffect(() => {
         if (product_id !== undefined) {
             dispatch(getProductDetail(product_id));
             dispatch(getCategories());
         }
     }, [product_id, dispatch]);
-
-    const product = useAppSelector((state: RootState) => state.products.product[0]);
-    const isOpen = useAppSelector((state: RootState) => state.dialog.isOpen);
 
     useEffect(() => {
         if (product) {
@@ -73,7 +73,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                 <DialogContent>
                     <DialogContentText>Ürün Bilgileri</DialogContentText>
                     <TextField
-                        autoFocus
                         margin="dense"
                         id="productName"
                         label="Ürün Adı"
@@ -84,7 +83,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
                     />
                     <TextField
-                        autoFocus
                         margin="dense"
                         id="category"
                         label="Kategori"
@@ -95,7 +93,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}      
                     />
                     <TextField
-                        autoFocus
                         margin="dense"
                         id="price"
                         label="Fiyat"
@@ -106,7 +103,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     />
                     <TextField
-                        autoFocus
                         margin="dense"
                         id="stock"
                         label="Stok"
@@ -117,7 +113,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                     />
                     <TextField
-                        autoFocus
                         margin="dense"
                         id="barcode"
                         label="Barkod"
@@ -127,8 +122,10 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         value={formData.barcode}
                         onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
                     />
+                    {product?.past_prices !== null ? (
+                        <PastPricesTextField pastPrices={product?.past_prices} />
+                    ) : undefined}
                     <TextField
-                        autoFocus
                         margin="dense"
                         id="creationDate"
                         label="Oluşturulma Tarihi"
