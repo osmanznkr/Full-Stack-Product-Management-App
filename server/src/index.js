@@ -37,10 +37,12 @@ const productRoutes = require('./routes/product.js')(
     products
 );
 const categoryRoutes = require('./routes/category.js')
+const userRoutes = require('./routes/user.js')
 
 // initialize routes
 app.use('/api/v1', productRoutes)
 app.use('/api/v1', categoryRoutes)
+app.use('/api/v1', userRoutes)
 
 app.use("/api/v1/auth", routes);
 

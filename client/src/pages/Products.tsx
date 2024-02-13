@@ -59,7 +59,10 @@ export default function Products() {
 
     // Functions
     const showDetail = React.useCallback((productId: number) => {
-        setProductId(productId);
+        if(productId !== undefined) {
+            setProductId(productId);
+        }
+        
         dispatch(openDialog());
     }, [dispatch]);
 
