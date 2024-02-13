@@ -1,7 +1,7 @@
 getAllUsersQuery = 'SELECT * FROM users';
 getUserByIdQuery = 'SELECT * FROM users WHERE id = $1';
-addUserQuery = 'INSERT INTO users (user_email, password) VALUES ($1, $2)';
-updateUserQuery = ' UPDATE users SET user_name = COALESCE($1, user_email), category_id = COALESCE($2, password) WHERE id = $3;'
+addUserQuery = 'INSERT INTO users (username, password, user_email, user_phone, user_role) VALUES ($1, $2, $3, $4, $5)';
+updateUserQuery = ' UPDATE users SET username = COALESCE($1, username), user_password = COALESCE($2, user_password), user_email = COALESCE($3, user_email), user_phone = COALESCE($4, user_phone), user_role = COALESCE($5, user_role) WHERE id = $6;'
 deleteUserByIdQuery = 'DELETE FROM users WHERE id = $1 ';
 
 module.exports = {

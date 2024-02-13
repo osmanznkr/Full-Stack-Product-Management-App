@@ -21,7 +21,7 @@ function registerUser(req, res) {
             return;
         }
 
-        userDB.register(req.body.username, req.body.password, (response) => {
+        userDB.register(req.body.username, req.body.password, req.body.user_email, req.body.user_phone, req.body.user_role, (response) => {
             sendResponse(
                 res,
                 response.error === undefined ? "Success!!" : "Something went wrong!",

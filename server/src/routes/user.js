@@ -6,8 +6,8 @@ const router = Router()
 router.get('/users', getUsers )
 router.get('/users/:id', getUserById )
 router.post('/users/create',addUser)
-router.put('/users/update/:product_id', updateUser)
-router.delete('/users/delete/:product_id', deleteUserById)
+router.put('/users/update/:id', updateUser)
+router.delete('/users/delete/:id', deleteUserById)
 
 
 module.exports = router

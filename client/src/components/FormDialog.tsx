@@ -9,7 +9,7 @@ import { Button } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { RootState } from "../redux/store";
 import { closeDialog } from "../redux/slices/dialogSlice";
-import { getProductDetail } from "../redux/slices/productSlice";
+import { getProductDetail, updateProductById } from "../redux/slices/productSlice";
 import { getCategories } from "../redux/slices/categorySlice";
 import moment from 'moment';
 import 'moment/locale/tr'
@@ -58,8 +58,18 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
     };
 
     const handleSubmit = () => {
-        console.log(formData);
-        handleClose();
+        if (product_id !== undefined) { 
+            const updatedProductData = {
+                product_name: formData.productName,
+                category: formData.category,
+                current_price: formData.price,
+                stock: formData.stock,
+                barcode: formData.barcode,
+                creationDate: formData.creationDate,
+            };
+            dispatch(updateProductById({ productId: product_id, updatedProductData }));
+            handleClose();
+        }
     };
 
     moment.locale('TR-tr')
@@ -90,7 +100,9 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         variant="outlined"
                         fullWidth
                         value={formData.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}      
+                        InputProps={{
+                            readOnly: true,
+                        }}     
                     />
                     <TextField
                         margin="dense"
@@ -133,7 +145,10 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         variant="outlined"
                         fullWidth
                         value={formData.creationDate}
-                        onChange={(e) => setFormData({ ...formData, creationDate: e.target.value })}
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                        
                     />
                 </DialogContent>
                 <DialogActions>
