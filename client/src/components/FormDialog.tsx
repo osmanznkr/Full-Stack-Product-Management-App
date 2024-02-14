@@ -8,7 +8,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { Button } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { RootState } from "../redux/store";
-import { closeDialog } from "../redux/slices/dialogSlice";
+import { closeDialog } from "../redux/slices/generalSlice";
 import { getProductDetail, updateProductById } from "../redux/slices/productSlice";
 import { getCategories } from "../redux/slices/categorySlice";
 import moment from 'moment';
@@ -24,7 +24,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
     // Redux Hooks
     const dispatch = useAppDispatch();
     const product = useAppSelector((state: RootState) => state.products.product[0]);
-    const isOpen = useAppSelector((state: RootState) => state.dialog.isOpen);
+    const isDialogOpen = useAppSelector((state: RootState) => state.general.isDialogOpen);
+    const isAdmin = useAppSelector((state: RootState) => state.auth.isAdmin)
 
     // Effects
     useEffect(() => {
@@ -58,7 +59,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
     };
 
     const handleSubmit = () => {
-        if (product_id !== undefined) { 
+        if (product_id !== undefined) {
             const updatedProductData = {
                 product_name: formData.productName,
                 category: formData.category,
@@ -78,7 +79,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
 
     return (
         <div>
-            <Dialog open={isOpen} onClose={handleClose} aria-labelledby="edit-apartment">
+            <Dialog open={isDialogOpen} onClose={handleClose} aria-labelledby="edit-apartment">
                 <DialogTitle id="edit-apartment">Edit</DialogTitle>
                 <DialogContent>
                     <DialogContentText>Ürün Bilgileri</DialogContentText>
@@ -90,7 +91,10 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         variant="outlined"
                         fullWidth
                         value={formData.productName}
-                        onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
+                        onChange={(e) => isAdmin && setFormData({ ...formData, productName: e.target.value })}
+                        InputProps={{
+                            readOnly: !isAdmin,
+                        }}
                     />
                     <TextField
                         margin="dense"
@@ -102,7 +106,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         value={formData.category}
                         InputProps={{
                             readOnly: true,
-                        }}     
+                        }}
                     />
                     <TextField
                         margin="dense"
@@ -112,7 +116,10 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         variant="outlined"
                         fullWidth
                         value={formData.price}
-                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                        onChange={(e) => isAdmin && setFormData({ ...formData, price: e.target.value })}
+                        InputProps={{
+                            readOnly: !isAdmin,
+                        }}
                     />
                     <TextField
                         margin="dense"
@@ -122,7 +129,10 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         variant="outlined"
                         fullWidth
                         value={formData.stock}
-                        onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                        onChange={(e) => isAdmin && setFormData({ ...formData, stock: e.target.value })}
+                        InputProps={{
+                            readOnly: !isAdmin,
+                        }}
                     />
                     <TextField
                         margin="dense"
@@ -132,7 +142,10 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         variant="outlined"
                         fullWidth
                         value={formData.barcode}
-                        onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
+                        onChange={(e) => isAdmin && setFormData({ ...formData, barcode: e.target.value })}
+                        InputProps={{
+                            readOnly: !isAdmin,
+                        }}
                     />
                     {product?.past_prices !== null ? (
                         <PastPricesTextField pastPrices={product?.past_prices} />
@@ -148,16 +161,18 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         InputProps={{
                             readOnly: true,
                         }}
-                        
+
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="secondary">
                         İptal
                     </Button>
-                    <Button variant="contained" onClick={handleSubmit} color="primary">
-                        Güncelle
-                    </Button>
+                    {isAdmin && (
+                        <Button variant="contained" onClick={handleSubmit} color="primary">
+                            Güncelle
+                        </Button>
+                    )}
                 </DialogActions>
             </Dialog>
         </div>

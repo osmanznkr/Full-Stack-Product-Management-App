@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,14 +13,16 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { onLogin } from '../api/auth';
-import { useAppDispatch } from '../redux/hooks';
-import { authenticateUser } from '../redux/slices/authSlice';
-
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { authenticateAdmin, authenticateUser, setUser } from '../redux/slices/authSlice';
+import { getUserDetailByUsername } from '../redux/slices/userSlice';
+import { RootState } from '../redux/store';
 
 const defaultTheme = createTheme();
 
 export default function Login() {
     const dispatch = useAppDispatch();
+    const user = useAppSelector((state: RootState) => state.users.user);
     const [formData, setFormData] = React.useState({
         username: '',
         password: '',
@@ -29,15 +31,34 @@ export default function Login() {
         client_secret: 'asdasd'
     });
 
+    React.useEffect(() => {
+        if (formData.username) {
+            dispatch(getUserDetailByUsername(formData.username))
+        }
+    }, [formData.username]);
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
             await onLogin(formData)
+            const currentUser = user[0]
+            dispatch(setUser(currentUser));
+            const currentUser_role = user[0].user_role;
+            if (currentUser_role === "admin") {
+                dispatch(authenticateAdmin())
+                localStorage.setItem('isAdmin', 'true')
+            } else {
+                localStorage.setItem('isAdmin', 'false')
+            }
+            console.log(user[0].user_role)
+
             dispatch(authenticateUser())
-            localStorage.setItem('isAuth', 'true')
+            // localStorage.setItem('isAuth', 'true')
         } catch (error) {
             console.log(error)
             console.log('login error');
+            // Hata durumunda kullanıcıya bilgilerini kontrol etmesi gerektiği mesajını gösterelim
+            alert('Lütfen bilgilerinizi kontrol edin.');
         }
     };
 
@@ -110,11 +131,6 @@ export default function Login() {
                             <Grid item xs>
                                 <Link href="#" variant="body2">
                                     Şifremi Unuttum
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href="#" variant="body2">
-                                    {"Kayıt Ol"}
                                 </Link>
                             </Grid>
                         </Grid>

@@ -10,8 +10,10 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { useAppDispatch } from '../redux/hooks';
-import { unAuthenticateUser } from '../redux/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { unAuthenticateAdmin, unAuthenticateUser } from '../redux/slices/authSlice';
+import { Link } from 'react-router-dom';
+import { RootState } from '../redux/store';
 
 const pages = ['Ürünler', 'Kategoriler', 'Profil'];
 
@@ -19,6 +21,8 @@ function Navbar() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const dispatch = useAppDispatch();
+
+    const isAdmin = useAppSelector((state: RootState) => state.auth.isAdmin);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -37,6 +41,8 @@ function Navbar() {
 
     const handleLogout = () => {
         dispatch(unAuthenticateUser())
+        dispatch(unAuthenticateAdmin())
+        localStorage.removeItem('token: ')
         // Çıkış yapılacak işlemleri burada gerçekleştir
         // Örneğin, localStorage'dan kullanıcı oturum bilgilerini kaldırabilir veya Redux store'unuzu güncelleyebilirsiniz
         console.log('Çıkış yap butonuna tıklandı');
@@ -50,8 +56,8 @@ function Navbar() {
                     <Typography
                         variant="h6"
                         noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
+                        component={Link} // Changed from "a" to "Link" here
+                        to="/" // Changed from "/" to "/" here
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -62,7 +68,7 @@ function Navbar() {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        PROMANAGE
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -105,8 +111,8 @@ function Navbar() {
                     <Typography
                         variant="h5"
                         noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
+                        component={Link} // Changed from "a" to "Link" here
+                        to="/" // Changed from "/" to "/" here
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -118,18 +124,30 @@ function Navbar() {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        PROMANAGE
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
+                        <Button
+                            component={Link}
+                            to="/products"
+                            sx={{ my: 2, color: 'white', display: 'block' }}
+                        >
+                            Ürünler
+                        </Button>
+                        <Button
+                            component={Link}
+                            to="/profile"
+                            sx={{ my: 2, color: 'white', display: 'block' }}
+                        >
+                            Profil
+                        </Button>
+                        {isAdmin && <Button
+                            component={Link}
+                            to="/admin"
+                            sx={{ my: 2, color: 'white', display: 'block' }}
+                        >
+                            Yönetim
+                        </Button>}
                     </Box>
 
                     <Box>

@@ -3,6 +3,8 @@ import {createSlice } from "@reduxjs/toolkit";
 
 interface DialogState {
     isAuth: boolean;
+    isAdmin: boolean;
+    user: [];
 }
 
 const userAuthFromLocalStorage = () => {
@@ -15,8 +17,20 @@ const userAuthFromLocalStorage = () => {
     return false
 }
 
+const userIsAdmin = () => {
+    const isAdmin = localStorage.getItem('isAdmin')
+
+    if (isAdmin && JSON.parse(isAdmin) === true) {
+        return true
+    }
+
+    return false
+}
+
 const initialState: DialogState = {
     isAuth: userAuthFromLocalStorage(),
+    isAdmin: userIsAdmin(),
+    user: []
 };
 
 const authSlice = createSlice({
@@ -29,9 +43,18 @@ const authSlice = createSlice({
         unAuthenticateUser(state) {
             state.isAuth = false;
         },
+        authenticateAdmin(state) {
+            state.isAdmin = true;
+        },
+        unAuthenticateAdmin(state) {
+            state.isAdmin = false;
+        },
+        setUser(state, action) {
+            state.user = action.payload;
+        },
     },
 });
 
-export const { authenticateUser, unAuthenticateUser } = authSlice.actions;
+export const { authenticateUser, unAuthenticateUser, authenticateAdmin, unAuthenticateAdmin, setUser } = authSlice.actions;
 
 export default authSlice.reducer;

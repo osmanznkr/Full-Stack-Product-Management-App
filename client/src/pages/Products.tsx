@@ -13,7 +13,7 @@ import { RootState } from '../redux/store';
 import Progress from '../components/Progress';
 import FormDialog from '../components/FormDialog';
 import { getProducts } from '../redux/slices/productSlice';
-import { openDialog } from '../redux/slices/dialogSlice';
+import { openDialog } from '../redux/slices/generalSlice';
 import { Column } from '../types/generalTypes';
 
 const columns: readonly Column[] = [
@@ -50,7 +50,7 @@ export default function Products() {
     // Redux Hooks
     const dispatch = useAppDispatch();
     const products = useAppSelector((state: RootState) => state.products);
-    const isOpen = useAppSelector((state: RootState) => state.dialog.isOpen);
+    const isDialogopen = useAppSelector((state: RootState) => state.general.isDialogOpen);
 
     // Effects
     React.useEffect(() => {
@@ -59,10 +59,10 @@ export default function Products() {
 
     // Functions
     const showDetail = React.useCallback((productId: number) => {
-        if(productId !== undefined) {
+        if (productId !== undefined) {
             setProductId(productId);
         }
-        
+
         dispatch(openDialog());
     }, [dispatch]);
 
@@ -129,7 +129,7 @@ export default function Products() {
                 )}
             </Paper>
             <Paper sx={{ width: '80%', overflow: 'hidden', marginLeft: 'auto', marginRight: 'auto', marginTop: '50px' }}>
-                {isOpen && <FormDialog product_id={productId} />}
+                {isDialogopen && <FormDialog product_id={productId} />}
             </Paper>
         </div>
     );
