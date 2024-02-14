@@ -15,3 +15,10 @@ export interface ProductState {
     loading: boolean;
     error: string
 }
+
+export interface NewProduct {
+    product_name: string;
+    category_id: number;
+    current_price: number;
+    stock: number;
+}

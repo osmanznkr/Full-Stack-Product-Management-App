@@ -1,4 +1,5 @@
 import axios from "axios";
+import { store } from "../redux/store";
 
 interface LoginData {
     [key: string]: string;
@@ -15,7 +16,13 @@ const config = {
     }
 };
 
+
 export async function onLogin(loginData: LoginData) {
+
+    const user = store.getState().users.user;
+    
+
+    const userRole = user[0].user_role;
 
 
     const formData = new URLSearchParams(loginData);
@@ -24,6 +31,9 @@ export async function onLogin(loginData: LoginData) {
 
     console.log(response.data)
     const accessToken = response.data.access_token
-    localStorage.setItem('isAuth', accessToken);
+    if(userRole === 'admin') {
+        localStorage.setItem('token: ', accessToken);
+    }
+    
 
 }

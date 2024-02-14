@@ -11,5 +11,11 @@ export interface FormDialogProps {
 }
 
 export interface DialogState {
-    isOpen: boolean;
+    isDialogOpen: boolean;
+    isSnackbarOpen: boolean;
+}
+
+export interface SnackbarProps {
+    message: string;
+    color: "error" | "warning" | "info" | "success";
 }

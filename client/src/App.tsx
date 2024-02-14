@@ -8,9 +8,13 @@ import Products from './pages/Products';
 import Homepage from './pages/Homepage';
 import { useAppSelector } from './redux/hooks';
 import { RootState } from './redux/store';
+import Profile from './pages/Profile';
+import Admin from './pages/Admin';
 
 const PrivateRoutes = () => {
   const authState = useAppSelector((state: RootState) => state.auth)
+  const adminState = useAppSelector((state: RootState) => state.auth.isAdmin)
+  console.log('admındstatsd', adminState)
 
   return <>{authState.isAuth ? <Outlet /> : <Navigate to='/login' />}</>
 }
@@ -28,8 +32,10 @@ function App() {
       <Header />
       <Routes>
         <Route element={<PrivateRoutes />}>
+          <Route path="/profile" element={<Profile />} />
           <Route path="/" element={<Homepage />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/products" element={<Homepage />} />
+          <Route path="/admin" element={<Admin />} />
         </Route>
         <Route element={<RestrictedRoute />}>
           <Route path="/register" element={<Register />} />

@@ -1,5 +1,5 @@
 const pool = require('../config/db.js');
-const { getAllUsersQuery, getUserByIdQuery, addUserQuery } = require('../queries/user.js');
+const { getAllUsersQuery, getUserByIdQuery, addUserQuery, getUserByUsernameQuery } = require('../queries/user.js');
 
 const getUsers = async (req, res) => {
     try {
@@ -23,10 +23,21 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getUserByUsername = async (req, res) => {
+    try {
+        const username = req.params.username;
+        const results = await pool.query(getUserByUsernameQuery, [username]);
+        res.status(200).send(results.rows);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
 
 const addUser = async (req, res) => {
     try {
-        const values = [ req.body.user_email, req.body.password]
+        const values = [ req.body.username, req.body.password, req.body.user_email, req.body.user_phone, req.body.user_role]
         const {rows} = await pool.query(addUserQuery, values);
 
         return res.status(201).json({
@@ -76,6 +87,7 @@ const deleteUserById = async (req, res) => {
 module.exports = {
     getUsers,
     getUserById,
+    getUserByUsername,
     addUser,
     updateUser,
     deleteUserById
