@@ -15,11 +15,13 @@ import moment from 'moment';
 import 'moment/locale/tr'
 import PastPricesTextField from "./PastPrices";
 import { FormDialogProps } from "../types/generalTypes";
+import { ConfirmDialog } from "./ComfirmDialog";
 
 const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
     // State Hooks
     const [formData, setFormData] = useState<any>({});
     const [categories, setCategories] = useState<any[]>([]);
+    const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
     // Redux Hooks
     const dispatch = useAppDispatch();
@@ -58,20 +60,29 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
         dispatch(closeDialog());
     };
 
+    const handleConfirmDialogOpen = () => {
+        setConfirmDialogOpen(true);
+    };
+
+    const updatedProductData = {
+        product_name: formData.productName,
+        category: formData.category,
+        current_price: formData.price,
+        stock: formData.stock,
+        barcode: formData.barcode,
+        creationDate: formData.creationDate,
+    };
+
     const handleSubmit = () => {
         if (product_id !== undefined) {
-            const updatedProductData = {
-                product_name: formData.productName,
-                category: formData.category,
-                current_price: formData.price,
-                stock: formData.stock,
-                barcode: formData.barcode,
-                creationDate: formData.creationDate,
-            };
-            dispatch(updateProductById({ productId: product_id, updatedProductData }));
-            handleClose();
+           
+            handleConfirmDialogOpen();
+            // dispatch(updateProductById({ productId: product_id, updatedProductData }));
+            // handleClose();
         }
     };
+
+    
 
     moment.locale('TR-tr')
 
@@ -174,6 +185,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         </Button>
                     )}
                 </DialogActions>
+                <ConfirmDialog updatedProductData={updatedProductData} open={confirmDialogOpen} onClose={handleClose} productId={product_id || 0} />
             </Dialog>
         </div>
     );

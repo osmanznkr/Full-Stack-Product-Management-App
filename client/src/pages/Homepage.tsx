@@ -49,8 +49,8 @@ export default function Homepage() {
             renderCell: (params) => (
                 <div style={{ display: 'flex', gap: 10 }}>
                     <Button type='button' size='small' onClick={() => handleDetails(params.row.id)} variant="contained" color="primary">DETAY</Button>
-                    {isAdmin && (
-                        <Button type='button' size='small' onClick={() => handleDelete(params.row.id)} variant="contained" color="error">SİL</Button>
+                        {isAdmin && (
+                     <Button type='button' size='small' onClick={() => handleDelete(params.row.id)} variant="contained" color="error">SİL</Button>
                     )}
                 </div>
             ),
