@@ -63,7 +63,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
     const handleConfirmDialogOpen = () => {
         setConfirmDialogOpen(true);
     };
-
     const updatedProductData = {
         product_name: formData.productName,
         category: formData.category,
@@ -77,10 +76,15 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
         if (product_id !== undefined) {
            
             handleConfirmDialogOpen();
-            // dispatch(updateProductById({ productId: product_id, updatedProductData }));
-            // handleClose();
         }
     };
+
+    const updateProduct = () => {
+        if (product_id) {
+            dispatch(updateProductById({ productId: product_id, updatedProductData }));
+        }
+        handleClose();
+    }
 
     
 
@@ -185,7 +189,12 @@ const FormDialog: React.FC<FormDialogProps> = ({ product_id }) => {
                         </Button>
                     )}
                 </DialogActions>
-                <ConfirmDialog updatedProductData={updatedProductData} open={confirmDialogOpen} onClose={handleClose} productId={product_id || 0} />
+                <ConfirmDialog
+                    onConfirm={updateProduct}
+                    open={confirmDialogOpen}
+                    onClose={handleClose}
+                    message={'Güncellemek istediğinizden emin misiniz?'}
+                />
             </Dialog>
         </div>
     );
