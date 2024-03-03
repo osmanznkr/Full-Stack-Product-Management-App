@@ -23,13 +23,6 @@ export interface SnackbarProps {
 export interface ConfirmDialogProps {
     open: boolean;
     onClose: () => void;
-    productId: number;
-    updatedProductData: {
-        product_name: string;
-        category: string;
-        current_price: number;
-        stock: number;
-        barcode: string;
-        creationDate: string;
-    };
+    onConfirm: () => void;
+    message: string;
 }

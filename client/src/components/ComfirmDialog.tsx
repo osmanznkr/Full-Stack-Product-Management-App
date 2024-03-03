@@ -1,21 +1,16 @@
-// create a confirm dialog component for FormDialog.tsx component
-
 import React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { RootState } from '../redux/store';
+import { useAppDispatch } from '../redux/hooks';
 import { closeDialog } from '../redux/slices/generalSlice';
-import { updateProductById } from '../redux/slices/productSlice';
 import { ConfirmDialogProps } from '../types/generalTypes';
- 
-export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, onClose, productId, updatedProductData }) => {
+
+export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, onClose, onConfirm, message }) => {
     // Redux Hooks
     const dispatch = useAppDispatch();
-    const isDialogOpen = useAppSelector((state: RootState) => state.general.isDialogOpen);
 
     // Event Handlers
     const handleConfirm = () => {
-        dispatch(updateProductById({ productId: productId, updatedProductData: updatedProductData }));
+        onConfirm();
         dispatch(closeDialog());
     };
 
@@ -30,18 +25,18 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ open, onClose, pro
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">{"Ürünü güncellemek istediğinize emin misiniz?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Confirm Action"}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Ürünü güncellemek istediğinize emin misiniz?
+                    {message}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCancel} color="primary">
-                    İptal
+                    Cancel
                 </Button>
                 <Button onClick={handleConfirm} color="primary" autoFocus>
-                    Onayla
+                    Confirm
                 </Button>
             </DialogActions>
         </Dialog>
